@@ -1,21 +1,21 @@
 // const fetch = require("node-fetch");
 import dynamicCubes from "./dynamicCubes";
-import { getTableName, transformDimensions, transformMeasures } from "./utils";
+import { transformDimensions, transformMeasures } from "./utils";
 
 asyncModule(async () => {
   const users = [
-    { schemaName: "test_user_schema", isWithFreePlan: false },
-    { schemaName: "user_two_schema", isWithFreePlan: false },
+    { cubeName: "Old", tableName: "test_user_schema.stripe_analytics" },
+    { cubeName: "New", tableName: "user_two_schema.stripe_analytics" },
   ];
   // const fetchedData = await (
   //   await fetch("https://allowing-sacred-hippo.ngrok-free.app/user-schemas")
   // ).json();
 
-  users.forEach(({ schemaName, isWithFreePlan }) => {
+  users.forEach(({ cubeName, tableName }) => {
     Object.entries(dynamicCubes).forEach(([key, obj]) => {
-      cube(`${schemaName}_${key}`, {
+      cube(`${cubeName}_${key}`, {
         ...obj,
-        sql_table: getTableName(schemaName, obj.sql_table, isWithFreePlan),
+        sql_table: tableName,
         dimensions: transformDimensions(obj.dimensions || []),
         measures: transformMeasures(obj.measures || []),
       });

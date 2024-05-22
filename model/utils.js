@@ -3,7 +3,7 @@ export const convertStringPropToFunction = (propNames, dimensionDefinition) => {
   propNames.forEach((propName) => {
     const propValue = newResult[propName];
 
-    if (!propValue) {
+    if (!propValue || typeof propValue === "function") {
       return;
     }
 
