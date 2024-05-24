@@ -1,24 +1,34 @@
 module.exports = {
   queryRewrite: (query, { securityContext }) => {
     if (!securityContext || !securityContext.cube) {
-      throw new Error("Not Found!");
+      throw new Error("CTX Not Found!");
     }
 
     const { cube } = securityContext;
 
-    query.dimensions = query.dimensions.map((dimension) =>
-      replaceCubeName(dimension, cube)
-    );
-    query.measures = query.measures.map((measure) =>
-      replaceCubeName(measure, cube)
-    );
+    if (query.dimensions) {
+      query.dimensions = query.dimensions.map((dimension) =>
+        replaceCubeName(dimension, cube)
+      );
+    }
 
-    query.timeDimensions = query.timeDimensions.map((timeDimension) => {
-      const newVal = { ...timeDimension };
-      newVal.dimension = replaceCubeName(newVal.dimension, cube);
-      return newVal;
-    });
-    query.order = replaceOrderCube(query.order, cube);
+    if (query.measures) {
+      query.measures = query.measures.map((measure) =>
+        replaceCubeName(measure, cube)
+      );
+    }
+
+    if (query.timeDimensions) {
+      query.timeDimensions = query.timeDimensions.map((timeDimension) => {
+        const newVal = { ...timeDimension };
+        newVal.dimension = replaceCubeName(newVal.dimension, cube);
+        return newVal;
+      });
+    }
+
+    if (query.order) {
+      query.order = replaceOrderCube(query.order, cube);
+    }
 
     return query;
   },

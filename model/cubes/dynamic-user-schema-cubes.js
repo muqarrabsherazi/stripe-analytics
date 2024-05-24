@@ -1,21 +1,18 @@
-// const fetch = require("node-fetch");
+const fetch = require("node-fetch");
 import dynamicCubes from "./dynamicCubes";
 import { transformDimensions, transformMeasures } from "./utils";
 
 asyncModule(async () => {
-  const users = [
-    { cubeName: "Old", tableName: "test_user_schema.stripe_analytics" },
-    { cubeName: "New", tableName: "user_two_schema.stripe_analytics" },
-  ];
-  // const fetchedData = await (
-  //   await fetch("https://allowing-sacred-hippo.ngrok-free.app/user-schemas")
-  // ).json();
+  const schemas = await (
+    await fetch("https://nocode-api.carbontech.build/customer/schemas")
+  ).json();
 
-  users.forEach(({ cubeName, tableName }) => {
+  schemas.forEach((schema) => {
     Object.entries(dynamicCubes).forEach(([key, obj]) => {
-      cube(`${cubeName}_${key}`, {
+      const cubeName = schema.split(".")[0];
+      cube(cubeName, {
         ...obj,
-        sql_table: tableName,
+        sql_table: schema,
         dimensions: transformDimensions(obj.dimensions || []),
         measures: transformMeasures(obj.measures || []),
       });
